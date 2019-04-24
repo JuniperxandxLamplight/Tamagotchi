@@ -16,12 +16,12 @@ class Tamagotchi extends React.Component {
       },
       tamagotchiInfo: {
         age: 0,
-        str: 0,
-        int: 0,
+        str: 1,
+        int: 1,
         canTrain: false,
         canBreed: false,
         canFight: false,
-        birthday: false,
+        birthday: 1,
         tamagotchiAlive: true,
         tamagotichiSkin: null
       },
@@ -48,25 +48,27 @@ class Tamagotchi extends React.Component {
   componentDidMount() {
     this.waitDecrementStats = setInterval(() =>
       this.decrementStats(),
-      10000
+      (9 + this.state.tamagotchiInfo.int) * 100
     );
   }
 
   decrementStats() {
-    const newState = {...this.state}.tamagotchiHealth;
-    newState.feed -=1;
-    newState.play -=1;
-    newState.sleep -=1;
-    if (newState.feed <= 0) { newState.feed = 0 };
-    if (newState.play <= 0) { newState.play = 0 };
-    if (newState.sleep <= 0) { newState.sleep = 0 };
-    this.setState({tamagotchiHealth: newState});
+    const newState = {...this.state};
+    newState.tamagotchiHealth.feed -=0.1;
+    newState.tamagotchiHealth.play -=0.1;
+    newState.tamagotchiHealth.sleep -=0.1;
+    if (newState.tamagotchiHealth.feed <= 0) { newState.tamagotchiHealth.feed = 0 };
+    if (newState.tamagotchiHealth.play <= 0) { newState.tamagotchiHealth.play = 0 };
+    if (newState.tamagotchiHealth.sleep <= 0) { newState.tamagotchiHealth.sleep = 0 };
+    this.setState({tamagotchiHealth: newState.tamagotchiHealth});
     this.statusCheck();
-    let isBirthday = {...this.state}.birthday;
-    if (isBirthday){
+    let isBirthday = newState.tamagotchiInfo.birthday;
+    console.log(this.state);
+    if (isBirthday % 20 === 0){
       this.ageUp();
     }
-    this.setState({birthday: !isBirthday});
+    newState.tamagotchiInfo.birthday += 1;
+    this.setState({tamagotchiInfo: newState.tamagotchiInfo});
   }
 
   handleTraining(stat){
