@@ -3,6 +3,8 @@ import styled from 'styled-components';
 function Header() {
   const Heading = styled.div`
     background-color: lightblue;
+    position: fixed;
+    top: 0;
     height: 200px;
     width: 100%;
     display: flex;

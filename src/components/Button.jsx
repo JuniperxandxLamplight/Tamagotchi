@@ -1,7 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
 function Button(props) {
+
+  const styles = {
+    fontSize: '1.5rem',
+    color: props.color,
+    border: `1px solid ${props.color}`,
+    borderRadius: '5px',
+    backgroundColor: 'transparent'
+  }
 
   function onButtonClick() {
     props.onUpdateStat(props.stat, props.otherStats);
@@ -9,7 +18,7 @@ function Button(props) {
 
   return(
     <div>
-      <button onClick={onButtonClick}>{props.stat}</button>
+      <button style={styles} onClick={onButtonClick}>{props.stat}</button>
     </div>
   );
 }
