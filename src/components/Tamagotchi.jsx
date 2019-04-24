@@ -2,6 +2,7 @@ import React from 'react';
 import Stats from './Stats';
 import Button from './Button';
 import styled from 'styled-components';
+import TrainButtons from './TrainButtons';
 
 class Tamagotchi extends React.Component {
 
@@ -28,9 +29,10 @@ class Tamagotchi extends React.Component {
         feed: "yellow",
         play: "yellow",
         sleep: "yellow"
-      },
+      }
     }
     this.handleUpdateStat = this.handleUpdateStat.bind(this);
+    this.handleTraining = this.handleTraining.bind(this);
     this.restart = this.restart.bind(this);
     this.backgroundColors = [ 'gray', 'blue', 'pink', 'green', 'rebeccapurple', 'crimson', 'darkorange', 'gold'];
     this.borderColors = ['black', 'navy', 'deeppink', 'black', 'indigo', 'maroon', 'tomato', 'chocolate'];
@@ -38,9 +40,9 @@ class Tamagotchi extends React.Component {
   }
 
   ageUp() {
-    const newTamagotchi = {...this.state}.tamagotchiInfo;
-    newTamagotchi.age += 1;
-    this.setState({tamagotchiInfo: newTamagotchi});
+    const newState = {...this.state}.tamagotchiInfo;
+    newState.age += 1;
+    this.setState({tamagotchiInfo: newState});
   }
 
   componentDidMount() {
@@ -51,14 +53,14 @@ class Tamagotchi extends React.Component {
   }
 
   decrementStats() {
-    const newTamagotchi = {...this.state}.tamagotchiHealth;
-    newTamagotchi.feed -=1;
-    newTamagotchi.play -=1;
-    newTamagotchi.sleep -=1;
-    if (newTamagotchi.feed <= 0) { newTamagotchi.feed = 0 };
-    if (newTamagotchi.play <= 0) { newTamagotchi.play = 0 };
-    if (newTamagotchi.sleep <= 0) { newTamagotchi.sleep = 0 };
-    this.setState({tamagotchiHealth: newTamagotchi});
+    const newState = {...this.state}.tamagotchiHealth;
+    newState.feed -=1;
+    newState.play -=1;
+    newState.sleep -=1;
+    if (newState.feed <= 0) { newState.feed = 0 };
+    if (newState.play <= 0) { newState.play = 0 };
+    if (newState.sleep <= 0) { newState.sleep = 0 };
+    this.setState({tamagotchiHealth: newState});
     this.statusCheck();
     let isBirthday = {...this.state}.birthday;
     if (isBirthday){
@@ -67,57 +69,73 @@ class Tamagotchi extends React.Component {
     this.setState({birthday: !isBirthday});
   }
 
-  handleUpdateStat(stat, otherStats) {
-    const newTamagotchi = {...this.state}.tamagotchiHealth;
-    newTamagotchi[stat] += 3;
-    if (newTamagotchi[stat] >= 10) { newTamagotchi[stat] = 10 };
-    for(let i=0; i<otherStats.length; i++){
-      const currentStat = otherStats[i];
-      newTamagotchi[currentStat] -= 1;
-      if (newTamagotchi[currentStat] <= 0) { newTamagotchi[currentStat] = 0 };
+  handleTraining(stat){
+    const newState = {...this.state};
+    newState.tamagotchiInfo[stat] += 1;
+    for (stat in newState.tamagotchiHealth) {
+      newState.tamagotchiHealth[stat] -= 1;
+      if (newState[stat] <= 0) {
+        newState[stat] = 0
+      };
     }
-    this.setState({tamagotchiHealth: newTamagotchi});
+    this.setState({newState});
     this.statusCheck();
   }
 
+  handleUpdateStat(stat, otherStats) {
+    const newState = {...this.state}.tamagotchiHealth;
+    newState[stat] += 3;
+    if (newState[stat] >= 10) { newState[stat] = 10 };
+    for (let i = 0; i < otherStats.length; i++) {
+      const currentStat = otherStats[i];
+      newState[currentStat] -= 1;
+      if (newState[currentStat] <= 0) {
+        newState[currentStat] = 0
+      };
+    }
+    this.setState({tamagotchiHealth: newState});
+    this.statusCheck();
+  }
+
+
   statusCheck(){
-    const newTamagotchi = {...this.state};
-    for(let stat in newTamagotchi.tamagotchiHealth){
-      if (newTamagotchi.tamagotchiHealth[stat] === 0) {
+    const newState = {...this.state};
+    for(let stat in newState.tamagotchiHealth){
+      if (newState.tamagotchiHealth[stat] === 0) {
         this.tamagotchiDeath();
       }
-      else if (newTamagotchi.tamagotchiHealth[stat] <= 3){
-        newTamagotchi.colors[stat] = "red";
-      } else if (newTamagotchi.tamagotchiHealth[stat] >= 7) {
-        newTamagotchi.colors[stat] = "green";
+      else if (newState.tamagotchiHealth[stat] <= 3){
+        newState.colors[stat] = "red";
+      } else if (newState.tamagotchiHealth[stat] >= 7) {
+        newState.colors[stat] = "green";
       } else {
-        newTamagotchi.colors[stat] = "yellow";
+        newState.colors[stat] = "yellow";
       }
     }
-    this.setState({colors: newTamagotchi.colors});
+    this.setState({colors: newState.colors});
   }
 
   tamagotchiDeath() {
     clearInterval(this.waitDecrementStats);
-    const newTamagotchi = {...this.state}.tamagotchiInfo;
-    newTamagotchi.tamagotchiAlive = false;
-    this.setState({tamagotchiInfo: newTamagotchi});
+    const newState = {...this.state}.tamagotchiInfo;
+    newState.tamagotchiAlive = false;
+    this.setState({tamagotchiInfo: newState});
   }
 
   restart() {
-    const newTamagotchi = {...this.state};
-    newTamagotchi.tamagotchiHealth.feed = 5;
-    newTamagotchi.tamagotchiHealth.play = 5;
-    newTamagotchi.tamagotchiHealth.sleep = 5;
-    newTamagotchi.tamagotchiInfo.tamagotchiAlive = true;
-    newTamagotchi.tamagotchiInfo.age = 0;
-    newTamagotchi.tamagotchiInfo.str = 0;
-    newTamagotchi.tamagotchiInfo.int = 0;
-    newTamagotchi.tamagotchiInfo.canBreed = false;
-    newTamagotchi.tamagotchiInfo.canFight = false;
-    newTamagotchi.tamagotchiInfo.canTrain = false;
-    this.setState({tamagotchiHealth: newTamagotchi.tamagotchiHealth});
-    this.setState({tamagotchiInfo: newTamagotchi.tamagotchiInfo});
+    const newState = {...this.state};
+    newState.tamagotchiHealth.feed = 5;
+    newState.tamagotchiHealth.play = 5;
+    newState.tamagotchiHealth.sleep = 5;
+    newState.tamagotchiInfo.tamagotchiAlive = true;
+    newState.tamagotchiInfo.age = 0;
+    newState.tamagotchiInfo.str = 0;
+    newState.tamagotchiInfo.int = 0;
+    newState.tamagotchiInfo.canBreed = false;
+    newState.tamagotchiInfo.canFight = false;
+    newState.tamagotchiInfo.canTrain = false;
+    this.setState({tamagotchiHealth: newState.tamagotchiHealth});
+    this.setState({tamagotchiInfo: newState.tamagotchiInfo});
     this.statusCheck();
     this.waitDecrementStats = setInterval(() =>
       this.decrementStats(),
@@ -177,6 +195,7 @@ class Tamagotchi extends React.Component {
 
     let VisibleButtons = {};
     let VisibleStats = {};
+    let Training = {};
     if (this.state.tamagotchiInfo.tamagotchiAlive) {
       VisibleButtons =
       <ButtonDiv>
@@ -190,6 +209,12 @@ class Tamagotchi extends React.Component {
       VisibleButtons = <RestartDiv><button style={RestartButton} onClick={this.restart}>Buy a new pet</button></RestartDiv>;
       VisibleStats = <h1>Dead</h1>;
     }
+    if (this.state.tamagotchiInfo.age >= 1 && (this.state.tamagotchiHealth.feed > 3 && this.state.tamagotchiHealth.play > 3 && this.state.tamagotchiHealth.sleep > 3)) {
+      Training = <TrainButtons color={this.borderColors[this.colorSelection]} onTrain={this.handleTraining} />
+
+    } else {
+      Training = <div />;
+    }
 
     return(
       <TamagotchiStyle>
@@ -198,6 +223,7 @@ class Tamagotchi extends React.Component {
           {VisibleStats}
         </ScreenStyle>
         {VisibleButtons}
+        {Training}
       </TamagotchiStyle>
     );
   }
