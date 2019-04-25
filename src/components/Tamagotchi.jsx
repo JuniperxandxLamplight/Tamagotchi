@@ -4,6 +4,7 @@ import Button from './Button';
 import styled from 'styled-components';
 import TrainButtons from './TrainButtons';
 import Breed from './Breed';
+import pic from '../sprite.png';
 
 class Tamagotchi extends React.Component {
 
@@ -183,9 +184,9 @@ class Tamagotchi extends React.Component {
       overflow: hidden;
       background-color: lightgray;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: flex-end;
-      justify-content: space-around;
+      justify-content: space-between;
       margin-bottom: 25px;
     `;
     const RestartDiv = styled.div`
@@ -229,6 +230,7 @@ class Tamagotchi extends React.Component {
       <TamagotchiStyle>
         <h1>{this.state.tamagotchiInfo.age} years old</h1>
         <ScreenStyle>
+          <img src={pic} />
           {VisibleStats}
         </ScreenStyle>
         {VisibleButtons}
