@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-function TrainButtons(props) {
+function Breed(props) {
 
   const styles = {
     textAlign: 'center',
@@ -18,17 +18,16 @@ function TrainButtons(props) {
     flexDirection: 'row'
   }
 
-  // function onTrainButtonsClick(stat) {
+  // function onButtonClick(stat) {
   //   props.onTrain(stat);
   // }
 
 
   return(
     <div style={DivStyle}>
-      <button style={styles} onClick={() => {props.onTrain('str')}}>run</button>
-      <button style={styles} onClick={() => {props.onTrain('int')}}>study</button>
+      <button style={styles} onClick={() => {props.onBreed()}}>Breed</button>
     </div>
   );
 }
 
-export default TrainButtons;
+export default Breed;

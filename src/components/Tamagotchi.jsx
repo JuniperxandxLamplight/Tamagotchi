@@ -3,6 +3,7 @@ import Stats from './Stats';
 import Button from './Button';
 import styled from 'styled-components';
 import TrainButtons from './TrainButtons';
+import Breed from './Breed';
 
 class Tamagotchi extends React.Component {
 
@@ -63,7 +64,6 @@ class Tamagotchi extends React.Component {
     this.setState({tamagotchiHealth: newState.tamagotchiHealth});
     this.statusCheck();
     let isBirthday = newState.tamagotchiInfo.birthday;
-    console.log(this.state);
     if (isBirthday % 20 === 0){
       this.ageUp();
     }
@@ -86,11 +86,11 @@ class Tamagotchi extends React.Component {
 
   handleUpdateStat(stat, otherStats) {
     const newState = {...this.state}.tamagotchiHealth;
-    newState[stat] += 3;
+    newState[stat] += 1;
     if (newState[stat] >= 10) { newState[stat] = 10 };
     for (let i = 0; i < otherStats.length; i++) {
       const currentStat = otherStats[i];
-      newState[currentStat] -= 1;
+      newState[currentStat] -= 0.1;
       if (newState[currentStat] <= 0) {
         newState[currentStat] = 0
       };
@@ -114,7 +114,14 @@ class Tamagotchi extends React.Component {
         newState.colors[stat] = "yellow";
       }
     }
+    if (this.state.tamagotchiInfo.age >= 1 && (this.state.tamagotchiHealth.feed > 3 && this.state.tamagotchiHealth.play > 3 && this.state.tamagotchiHealth.sleep > 3)) {
+      newState.tamagotchiInfo.canTrain = true;
+    } else {
+      newState.tamagotchiInfo.canTrain = false;
+    }
     this.setState({colors: newState.colors});
+
+
   }
 
   tamagotchiDeath() {
@@ -211,7 +218,7 @@ class Tamagotchi extends React.Component {
       VisibleButtons = <RestartDiv><button style={RestartButton} onClick={this.restart}>Buy a new pet</button></RestartDiv>;
       VisibleStats = <h1>Dead</h1>;
     }
-    if (this.state.tamagotchiInfo.age >= 1 && (this.state.tamagotchiHealth.feed > 3 && this.state.tamagotchiHealth.play > 3 && this.state.tamagotchiHealth.sleep > 3)) {
+    if (this.state.tamagotchiInfo.canTrain) {
       Training = <TrainButtons color={this.borderColors[this.colorSelection]} onTrain={this.handleTraining} />
 
     } else {
